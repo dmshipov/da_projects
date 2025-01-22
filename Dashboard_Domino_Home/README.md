@@ -38,9 +38,9 @@ SELECT
     CAST(ROUND(SUM(CAST(brv_retaildemand.sum AS DECIMAL) / 100), 0) AS FLOAT) AS "Выручка",
     DATE_TRUNC('month', CAST(rd.moment as DATE)) AS "Дата"
 FROM 
-    training_ms.brv_retaildemand as rd
+    ms.brv_retaildemand as rd
 JOIN
-    training_ms.brv_retaildemand_positions rds ON rds.entity_id = rd.id
+    ms.brv_retaildemand_positions rds ON rds.entity_id = rd.id
 WHERE
     "Дата" BETWEEN {{interval_from}} AND {{interval_to}}
 GROUP BY 
@@ -54,9 +54,9 @@ ORDER BY
 SELECT rds.name as "Магазины",
     CAST(ROUND(SUM(CAST(training_ms.brv_retaildemand.sum AS DECIMAL) / 100), 0) AS INT) AS "Планируемая выручка"
 FROM 
-    training_ms.brv_retaildemand as rd
+    ms.brv_retaildemand as rd
 JOIN
-    training_ms.brv_retailstore rds ON rds.owner = rd.owner
+    ms.brv_retailstore rds ON rds.owner = rd.owner
 GROUP BY 
     rds.name
 ORDER BY
