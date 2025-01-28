@@ -42,3 +42,7 @@
 1. Клонируйте репозиторий:
    ```bash
    git clone https://github.com/dmshipov/da_projects.git
+
+## Результат
+
+![](Dash_npa.png)

@@ -52,15 +52,15 @@ app.layout = html.Div([
     ], style={"margin": "20px"}),
 
     html.Div([
-        dcc.Graph(id='yearly-acts', style={'width': '62%', 'height': '70vh'}),
-        dcc.Graph(id='acts-by-subject', style={'width': '55%', 'height': '70vh'}, config={'scrollZoom': False},
+        dcc.Graph(id='yearly-acts', style={'width': '53%', 'height': '37vh'}),
+        dcc.Graph(id='acts-by-subject', style={'width': '47%', 'height': '37vh'}, config={'scrollZoom': False},
         )
         
     ], style={'display': 'flex', 'justify-content': 'space-between'}),
     
     html.Div([
-        dcc.Graph(id='acts-by-status', style={'width': '50%', 'height': '70vh'}),
-        dcc.Graph(id='acts-by-document', style={'width': '47%', 'height': '70vh'})
+        dcc.Graph(id='acts-by-status', style={'width': '50%', 'height': '42vh'}),
+        dcc.Graph(id='acts-by-document', style={'width': '47%', 'height': '42vh'})
     ], style={'display': 'flex', 'justify-content': 'space-between'})
 ], style={"font-family": "Arial"})
 
@@ -108,7 +108,7 @@ def update_charts_and_indicators(selected_years):  # Добавлен новый
     index = pd.Index(range(start_year, end_year + 1), name='Год')
     yearly_data = yearly_data.set_index('Год').reindex(index, fill_value=0).reset_index()
     
-    yearly_fig = px.line(yearly_data, x='Год', y='Акт', title='Общее количество НПА субъектов РФ по годам')
+    yearly_fig = px.line(yearly_data, x='Год', y='Акт', title='<b>Общее количество НПА субъектов РФ по годам</b>')
     # Настройка оси X для более частых подписей
     yearly_fig.update_xaxes(
         tickvals=yearly_data['Год'],  # Устанавливаем значения для подписей
@@ -117,21 +117,21 @@ def update_charts_and_indicators(selected_years):  # Добавлен новый
     )
     # Изменяем название оси Y
     yearly_fig.update_layout(
-        yaxis_title='Количество НПА субъектов РФ'  # Меняем название оси Y
+        yaxis_title='Количество НПА субъектов РФ', yaxis=dict(fixedrange=True), height=630# Меняем название оси Y
     )
     # Акт по Субъектам РФ
     subj_data = filtered_df[filtered_df['Категория'] == 'Субъект РФ'].groupby('Федеральный округ')[['Акт']].sum().reset_index().sort_values(by='Акт', ascending=True)
     subj_data['Форматированный акт'] = subj_data['Акт'].apply(lambda x: f"{x:,}".replace(",", " "))
     subject_fig = go.Figure(data=[go.Bar(x=subj_data['Акт'], y=subj_data['Федеральный округ'], orientation='h', text=subj_data['Акт'])])
     subject_fig.update_traces(texttemplate='%{text}', textposition='outside')
-    subject_fig.update_layout(title='Количество НПА субъектов РФ по федеральным округам', yaxis_title='Федеральный округ', xaxis_title='Количество НПА субъектов РФ', yaxis=dict(fixedrange=True), height=662)
-    
+    subject_fig.update_layout(title='<b>Количество НПА субъектов РФ по федеральным округам</b>', yaxis_title='Федеральный округ', xaxis_title='Количество НПА субъектов РФ', yaxis=dict(fixedrange=True), height=630)   
     # Акт по Вид документа
     doc_data = filtered_df[filtered_df['Категория'] == 'Вид документа'].groupby(['Значение'])['Акт'].sum().reset_index().sort_values(by='Акт', ascending=False).head(6)
     
-    document_fig = go.Figure(data=[go.Bar(x=doc_data['Значение'], y=doc_data['Акт'], orientation='v', text=doc_data['Акт'])])
+    document_fig = go.Figure(data=[go.Bar(x=doc_data['Значение'], y=doc_data['Акт'], orientation='v', text=doc_data['Акт'], marker = dict(color='green'
+    ))])
     document_fig.update_traces(texttemplate='%{text}', textposition='outside')
-    document_fig.update_layout(title='Количество НПА субъектов РФ по видам документа', yaxis_title='Количество НПА субъектов РФ', xaxis_title='Вид НПА субъекта РФ', xaxis=dict(fixedrange=True), height=662)
+    document_fig.update_layout(title='<b>Количество НПА субъектов РФ по видам документа</b>', yaxis_title='Количество НПА субъектов РФ', xaxis_title='Вид НПА субъекта РФ', xaxis=dict(fixedrange=True), height=630)
 
 
 
@@ -143,8 +143,8 @@ def update_charts_and_indicators(selected_years):  # Добавлен новый
     status_data['Процент'] = status_data['Акт'].apply(lambda x: round((x / total_sum) * 100, 0))
     status_data = status_data.sort_values(by='Акт', ascending=False).head(2)
     # Строим круговую диаграмму
-    status_fig = px.pie(status_data, values='Акт', names='Значение', title='Статусу действия НПА субъектов РФ', hover_data=['Процент'])
-    status_fig.update_traces(textinfo='label+percent', textposition='inside', hole=.4)
+    status_fig = px.pie(status_data, values='Акт', names='Значение', title='<b>Статусу действия НПА субъектов РФ</b>', hover_data=['Процент'])
+    status_fig.update_traces(textinfo='label+percent', textposition='outside', hole=.4)
 
     # Добавляем аннотацию с общим количеством НПА в центр круга
     status_fig.add_annotation(dict(font=dict(size=14), x=0.5, y=0.5, showarrow=False, text=f'Всего НПА:<br>{total_sum:,}'.replace(',', ' ')))
@@ -152,8 +152,8 @@ def update_charts_and_indicators(selected_years):  # Добавлен новый
     status_fig.update_layout(
         legend=dict(font=dict(size=14)),  # Увеличиваем размер шрифта легенды
         font=dict(size=14), # Устанавливаем размер шрифта для заголовка
-        title_font_size=16  # Увеличиваем размер шрифта основной надписи               
-
+        title_font_size=16,  # Увеличиваем размер шрифта основной надписи               
+        height=720
     )
 
     return (
