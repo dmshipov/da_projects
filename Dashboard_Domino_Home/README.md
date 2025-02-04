@@ -23,7 +23,7 @@
 - **ClickHouse**: для хранения и обработки данных о продажах.
 
 ### Ссылка на дашборд
-[Дашборд для мониторинга бизнеса](https://datalens.yandex/jckrxz64qwde5?state=84886744402)
+[Дашборд для мониторинга бизнеса](https://datalens.yandex/jckrxz64qwde5)
 
 ## Примеры запросов для ClickHouse
 
